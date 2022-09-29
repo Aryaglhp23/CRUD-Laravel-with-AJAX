@@ -31,7 +31,7 @@ class PostController extends Controller
         ]);
 
         // check Validation
-        if ($validator->fails()) {
+        if ($validator->fails()) {  
             return response()->json($validator->errors(), 422);
         }
 
@@ -44,8 +44,45 @@ class PostController extends Controller
         // return Respons JSON
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Disimpan!',
+            'message' => 'Data Berhasil Ditambahkan!',
             'data'    => $post 
+        ]);
+    }
+
+    public function show(Post $post) 
+    {
+        // Return Response
+        return response()->json
+        ([
+            'success' => true,
+            'message' => 'Detail Data Post',
+            'data' => $post
+        ]);
+    }
+
+    public function update(Request $request, Post $post) 
+    {
+        // Make validator rules
+        $validator= Validator::make($request->all(), [
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // create Post
+        $post->update([
+            'title'     => $request->title, 
+            'content'   => $request->content
+        ]);
+
+        // return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Diudapte!',
+            'data'    => $post  
         ]);
     }
 }

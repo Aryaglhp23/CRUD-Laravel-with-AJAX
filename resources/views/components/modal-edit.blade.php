@@ -1,28 +1,34 @@
 <!-- Modal -->
-<div class="modal fade" id="modal-create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">TAMBAH POST</h5>
+                <h5 class="modal-title" id="exampleModalLabel">EDIT POST</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
+
+                <input type="hidden" id="post_id">
+
                 <div class="form-group">
                     <label for="name" class="control-label">Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Masukan Judul">
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-title"></div>
+                    <input type="text" class="form-control" id="title-edit">
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-title-edit"></div>
                 </div>
+                
+
                 <div class="form-group">
                     <label class="control-label">Content</label>
-                    <textarea class="form-control" id="content" rows="4" placeholder="Masukan Deskripsi"></textarea>
-                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-content"></div>
+                    <textarea class="form-control" id="content-edit" rows="4"></textarea>
+                    <div class="alert alert-danger mt-2 d-none" role="alert" id="alert-content-edit"></div>
                 </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">TUTUP</button>
-                <button type="button" class="btn btn-primary" id="store">SIMPAN</button>
+                <button type="button" class="btn btn-primary" id="update">UPDATE</button>
             </div>
         </div>
     </div>
@@ -30,39 +36,58 @@
 
 <script>
     //button create post event
-    $('body').on('click', '#btn-create-post', function () {
+    $('body').on('click', '#btn-edit-post', function () {
 
-        //open modal
-        $('#modal-create').modal('show');
+        let post_id = $(this).data('id');
+
+        //fetch detail post with ajax
+        $.ajax({
+            url: `/posts/${post_id}`,
+            type: "GET",
+            cache: false,
+            success:function(response){
+
+                //fill data to form
+                $('#post_id').val(response.data.id);
+                $('#title-edit').val(response.data.title);
+                $('#content-edit').val(response.data.content);
+
+                //open modal
+                $('#modal-edit').modal('show');
+            }
+        });
     });
 
-    //action create post
-    $('#store').click(function(e) {
+    //action update post
+    $('#update').click(function(e) {
         e.preventDefault();
 
         //define variable
-        let title   = $('#title').val();
-        let content = $('#content').val();
+        let post_id = $('#post_id').val();
+        let title   = $('#title-edit').val();
+        let content = $('#content-edit').val();
         let token   = $("meta[name='csrf-token']").attr("content");
         
         //ajax
         $.ajax({
-            url: `/posts`,
-            type: "POST",
+
+            url: `/posts/${post_id}`,
+            type: "PUT",
             cache: false,
             data: {
                 "title": title,
                 "content": content,
                 "_token": token
             },
-            
             success:function(response){
-                //show sweet alert pop up
+
+                //show success message
                 Swal.fire({
                     type: 'success',
                     icon: 'success',
                     title: `${response.message}`,
-                    showConfirmButton:  true,
+                    showConfirmButton: false,
+                    timer: 3000
                 });
 
                 //data post
@@ -77,39 +102,40 @@
                     </tr>
                 `;
                 
-                //append to table
-                $('#table-posts').prepend(post);
-                
-                //clear form
-                $('#title').val('');
-                $('#content').val('');
+                //append to post data
+                $(`#index_${response.data.id}`).replaceWith(post);
 
                 //close modal
-                $('#modal-create').modal('hide');
-            },
+                $('#modal-edit').modal('hide');
+                
 
+            },
             error:function(error){
                 
                 if(error.responseJSON.title[0]) {
 
                     //show alert
-                    $('#alert-title').removeClass('d-none');
-                    $('#alert-title').addClass('d-block');
+                    $('#alert-title-edit').removeClass('d-none');
+                    $('#alert-title-edit').addClass('d-block');
 
                     //add message to alert
-                    $('#alert-title').html(error.responseJSON.title[0]);
+                    $('#alert-title-edit').html(error.responseJSON.title[0]);
                 } 
 
                 if(error.responseJSON.content[0]) {
 
                     //show alert
-                    $('#alert-content').removeClass('d-none');
-                    $('#alert-content').addClass('d-block');
+                    $('#alert-content-edit').removeClass('d-none');
+                    $('#alert-content-edit').addClass('d-block');
 
                     //add message to alert
-                    $('#alert-content').html(error.responseJSON.content[0]);
+                    $('#alert-content-edit').html(error.responseJSON.content[0]);
                 } 
+
             }
+
         });
+
     });
+
 </script>

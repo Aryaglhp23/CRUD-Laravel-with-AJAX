@@ -28,7 +28,7 @@
 
                             <table class="table table-bordered table-striped">
                                 <thead>
-                                    <tr>
+                                    <tr class="text-center">
                                         <th>Title</th>
                                         <th>Content</th>
                                         <th>Aksi</th>
@@ -54,5 +54,6 @@
         </div>
 
         @include('components.modal-create')
+        @include('components.modal-edit')
     </body>
 </html>
