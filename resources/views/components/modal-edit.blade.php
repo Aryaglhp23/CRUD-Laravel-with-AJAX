@@ -86,8 +86,7 @@
                     type: 'success',
                     icon: 'success',
                     title: `${response.message}`,
-                    showConfirmButton: false,
-                    timer: 3000
+                    button: 'Kembali',
                 });
 
                 //data post
@@ -131,11 +130,7 @@
                     //add message to alert
                     $('#alert-content-edit').html(error.responseJSON.content[0]);
                 } 
-
             }
-
         });
-
     });
-
 </script>

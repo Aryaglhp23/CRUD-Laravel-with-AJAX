@@ -26,14 +26,14 @@ class PostController extends Controller
     {
         // make Validation
         $validator= Validator::make($request->all(), [
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'required|unique:posts|max:255',
+            'content' => 'required|unique:posts|max:255',
         ]);
 
         // check Validation
         if ($validator->fails()) {  
             return response()->json($validator->errors(), 422);
-        }
+        } 
 
         // create Post
         $post = Post::create([
@@ -84,5 +84,21 @@ class PostController extends Controller
             'message' => 'Data Berhasil Diudapte!',
             'data'    => $post  
         ]);
+    }
+
+    public function detroy($id) 
+    {
+        // delete by ID
+        // Post::where('id', $id)->delete();
+        $post = Post::find($id);
+        $post->delete();
+
+        // response
+        return response()->json([
+            'success'=> 'true',
+            'message'=> 'Data Berhasil di Hapus!!',
+        ]);
+
+        
     }
 }
