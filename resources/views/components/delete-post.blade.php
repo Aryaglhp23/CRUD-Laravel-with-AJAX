@@ -25,9 +25,8 @@
 
                 //fetch to delete data
                 $.ajax({
-
+                    type: "GET",
                     url: `/posts/${post_id}`,
-                    type: "delete",
                     cache: false,
                     data: {
                         "_token": token
