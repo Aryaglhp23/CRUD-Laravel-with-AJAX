@@ -28,18 +28,16 @@
                     type: "GET",
                     url: `/posts/${post_id}`,
                     cache: false,
-                    data: {
-                        "_token": token
-                    },
+                    data: {"_token": token},
+
                     success:function(response){ 
 
-                        //show success message
+                        // response success
                         Swal.fire({
                             type: 'success',
                             icon: 'success',
-                            title: `${response.message}`,
-                            showConfirmButton: false,
-                            timer: 3000
+                            title: 'Data Berhasil di Hapus',
+                            showConfirmButton: true
                         });
 
                         //remove post on table
