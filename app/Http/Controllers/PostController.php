@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -16,10 +17,16 @@ class PostController extends Controller
     public function index()
     {
         //get all posts from Models
-        $posts = Post::latest()->get();
+        // $posts = Post::latest()->get();
+        $posts = Post::latest()->paginate(7);
 
         //return view with data
         return view('posts', compact('posts'));
+    }
+
+    public function boot()
+    {
+        Paginator::useBootstrap();
     }
 
     public function store(Request $request) 
@@ -89,7 +96,6 @@ class PostController extends Controller
     public function detroy($id) 
     {
         // delete by ID
-        // Post::where('id', $id)->delete();
         $post = Post::find($id);
         $post->delete();
 
